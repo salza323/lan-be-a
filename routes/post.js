@@ -31,14 +31,14 @@ app.delete('/delete/:postID', (request, response) => {
   const postID = request.params.postID;
   Post.deletePost(postID)
     .then(() => {
-      response.status(200).json({ message: 'Post archived'});
+      response.status(200).json({ message: 'Post archived' });
     })
     .catch((error) => {
       console.log(error);
       response.status(500).json({ message: 'Error archiving post' });
     });
 });
-  
+
 // Fetch a single post
 app.get('/:id', (request, response) => {
   const postID = request.params.id;
@@ -100,7 +100,7 @@ app.get('/like/:id', (request, response) => {
       console.log(err);
       response
         .status(500)
-        .json({ message: 'Error incrementing post\'s comment count' });
+        .json({ message: "Error incrementing post's comment count" });
     });
 });
 
@@ -123,21 +123,18 @@ app.delete('/like/:id', (request, response) => {
       console.log(err);
       response
         .status(500)
-        .json({ message: 'Error decrementing post\'s comment count' });
+        .json({ message: "Error decrementing post's comment count" });
     });
 });
 
-//Update a post must be the user that created post
-app.put('/update/:userID/:postID', (request, response) => {
-  console.log(request.params);
-  const postID = request.params.postID;
-  const userID = request.params.userID;
-  const { newDescription } = request.body;
+app.put('/:postID', (request, response) => {
+  const { post } = request.body;
 
-  if (userID !== request.user.id) {
+  // validate that the post belongs to the user
+  if (post.user_id !== request.user.id) {
     response.status(401).json({ message: 'unathorized user' });
   } else {
-    Post.postUpdate(postID, newDescription)
+    Post.postUpdate(post.id, post.description)
       .then((data) => response.status(200).json(data))
       .catch((err) => {
         response.status(500).json(err);

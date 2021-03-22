@@ -1,6 +1,5 @@
 const database = require('../database/dbConfig');
 
-
 // Create post
 const createPost = (post) => {
   return database('posts').insert(post).returning('id');
@@ -8,7 +7,7 @@ const createPost = (post) => {
 
 // Delete post
 const deletePost = (postID) => {
-  return database('posts').where({id: postID}).update('visible', false);
+  return database('posts').where({ id: postID }).update('visible', false);
 };
 
 // Create an entry of a post in the room_to_posts table
@@ -21,35 +20,35 @@ const addPostLike = (userID, postID) => {
   return database('liked_posts').insert({ user_id: userID, post_id: postID });
 };
 
-
 // Add 1 to post likes column
-const incrementPostLikes = postID => {
+const incrementPostLikes = (postID) => {
   return database('posts').where('id', postID).increment('likes', 1);
 };
 
 // Remove entry for post like
 const removePostLike = (userID, postID) => {
-  return database('liked_posts').where({ user_id: userID, post_id: postID }).del();
+  return database('liked_posts')
+    .where({ user_id: userID, post_id: postID })
+    .del();
 };
 
 // Remove 1 from post likes column
-const decrementPostLikes = postID => {
+const decrementPostLikes = (postID) => {
   return database('posts').where('id', postID).decrement('likes', 1);
 };
 
 // Add 1 to posts' comments colu,m
-const incrementCommentCount = postID => {
+const incrementCommentCount = (postID) => {
   return database('posts').where('id', postID).increment('comments', 1);
 };
-  
-  
+
 // Remove 1 from posts' comments column
-const decrementCommentCount = postID => {
+const decrementCommentCount = (postID) => {
   return database('posts').where('id', postID).decrement('comments', 1);
 };
 
 // Fetch individual post
-const fetch = postID => {
+const fetch = (postID) => {
   return database('posts')
     .join('users', 'posts.user_id', 'users.id')
     .where('posts.id', postID)
@@ -63,7 +62,7 @@ const fetch = postID => {
       'posts.likes',
       'posts.comments',
       'posts.created_at',
-      'posts.updated_at'
+      'posts.updated_at',
     ])
     .first();
 };
@@ -83,7 +82,7 @@ const fetchRecent = () => {
       'posts.likes',
       'posts.comments',
       'posts.created_at',
-      'posts.updated_at'
+      'posts.updated_at',
     ]);
 };
 
@@ -102,7 +101,7 @@ const fetchPopular = () => {
       'posts.likes',
       'posts.comments',
       'posts.created_at',
-      'posts.updated_at'
+      'posts.updated_at',
     ]);
 };
 
@@ -122,11 +121,11 @@ const fetchSearch = (search) => {
       'posts.likes',
       'posts.comments',
       'posts.created_at',
-      'posts.updated_at'
+      'posts.updated_at',
     ]);
 };
 
-//helper for updating a post with given postID and newDescription
+// updates a posts description
 const postUpdate = (postID, newDescription) => {
   return database('posts')
     .where('id', postID)
@@ -149,4 +148,3 @@ module.exports = {
   fetchSearch,
   postUpdate,
 };
-
